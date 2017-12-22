@@ -4,11 +4,10 @@
 > It have a two docker container  linked  through docker-compose util.
 > The Main container "redis-main" created only for example, and not need in real backup operations.
 > If you want to schedule backup, then you must use cron-like program in docker host or  add  shedule function in the backup container.
-
-
 - How to run 
  - Change docker-compose.yml file. Remove the redis-main service,  and add or change vars.
- - If  you had two or  more regions in Amazon Glacier Service  you must check file  redis-backup/backup.sh and add(change)  your regions. Vars in the .env file will be  ignored.
+ - Copy file env.list.example to env.list and change vars in this file (amazon, redis vars etc.)
+ - If  **you had two or  more regions in Amazon Glacier Service**  you must check file  redis-backup/backup.sh and add(change)  your regions. Vars in the .env file will be  ignored.
  - Run container used command
   ```
    docker-compose run redis-backup
@@ -17,6 +16,8 @@
   ```
    crontab -e # linux command for properly edit crontab file.
    5 2 * * *  docker run --rm -d --name redis-backup > /dev/null 2>&1 #  add run backup task  at 2 min 5 AM(for example), and send  any output to "black hole".
+   #or add 
+   5 2 * * *  docker run --rm -d --name redis-backup # if you want to send errors to some apps.
   ```
  
  
@@ -25,4 +26,10 @@
 - [x] Send arhive to glacier :vhs:
 - [ ] Rewrite program (go,python,etc.) :rabbit:
 - [ ] Migration to kubernetes (for sheduled operations)
+
+**P.S.** If you want to rebuild backup container without deps  you must  run  comand 
+```
+docker-compose up -d --no-deps --build redis-backup
+```
+
 
